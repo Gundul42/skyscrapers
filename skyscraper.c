@@ -6,7 +6,7 @@
 /*   By: graja <gundul@mailbox.org>                     /. `|||||||||||       */
 /*                                                     o__,_||||||||||'       */
 /*   Created: 2021/05/08 16:22:44 by graja                                    */
-/*   Updated: 2021/05/09 08:30:06 by graja                Gundul.net          */
+/*   Updated: 2021/05/09 08:44:27 by graja                Gundul.net          */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -47,41 +47,13 @@ int  ft_zerocheck(int  **field, int n)
   return (0);
 }
 
-void  ft_initfield(int **field,int *clues,int n)
-{
-  int  i;
-  int  dir;
-  
-  i = 0;
-  while (i < (n * 4))
-  {
-    dir = (i / n);
-    if ((dir == 0) && (clues[i] == 1))
-      field[0][i] = 4;
-    else if ((dir == 0) && (clues[i] == 4))
-      field[0][i] = 1;
-    else if ((dir == 1) && (clues[i] == 1))
-      field[i - n][n - 1] = 4;
-    else if ((dir == 1) && (clues[i] == 4))
-      field[i - n][n - 1] = 1;
-    else if ((dir == 2) && (clues[i] == 1))
-      field[n - 1][3 * n - i] = 4;
-    else if ((dir == 2) && (clues[i] == 4))
-      field[n - 1][3 * n - i] = 1;
-    else if ((dir == 3) && (clues[i] == 1))
-      field[4 * n - i - 1][0] = 4;
-    else if ((dir == 3) && (clues[i] == 1))
-      field[4 * n - i - 1][0] = 1;
-    i++;
-  }
-}
-
 void  ft_printfield(int  **field,int  n)
 {
   int  row;
   int  col;
   
   row = 0;
+  printf("\n");
   while (row < n)
   {
     col = 0;
@@ -94,67 +66,6 @@ void  ft_printfield(int  **field,int  n)
     row++;
   }
   printf("\n\n");
-}
-
-int  ft_checkvalid(int  **field, int  num, int  n)
-{
-  int  chk[n];
-  int  row;
-  int  col;
-  int  bck;
-  int  i;
-  
-  i = 0;
-  while (i < n)
-  {
-    chk[i] = 0;
-    i++;
-  }
-  bck = 0;
-  row = 0;
-  while (row < n)
-  {
-    col = 0;
-    while (col < n)
-    {
-      if (field[row][col] == num)
-      {
-        bck++;
-        if (chk[col] == 0)
-          chk[col] = 1;
-        else
-          return (1);
-      }
-      col++;
-    }
-    row++;
-  }
-  if (bck == (n - 1))
-  {
-    i = 0;
-    while (i < n)
-    {
-      if (chk[i] == 0)
-        col = i;
-      i++;
-    }
-    row = 0;
-    while (row < n)
-    {
-      i = 0;
-      bck = 0;
-      while (i < n)
-      {
-        if (field[row][i] == num)
-          bck++;
-        i++;
-      }
-      if (bck == 0)
-        field[row][col] = num;
-      row++;
-    }
-  }
-  return (0);
 }
 
 int  ft_countrow(int  **field,int  row,int  n, int dir)
@@ -324,7 +235,7 @@ int** SolvePuzzle (int *clues)
 {
   int  n;
   int  **field;
-  n = 6;   /* make it flexible for later projects */
+  n = 4;   /* make it flexible for later projects */
   field = ft_getmem2d(n);
   ft_solve(field, clues, 0, 0, n);
   ft_printfield(field, n);
@@ -335,7 +246,7 @@ int	main(void)
 {
 	int	**matrix;
 	int	*clues;
-	int	clue[24] = {1,3,4,2,2,2,3,2,1,3,2,2,3,1,2,2,2,4,4,2,2,4,3,1};
+	int	clue[16] = {2,2,1,3,2,2,3,1,1,2,2,3,3,2,1,3};
 
 	clues = &clue[0];
 	matrix = SolvePuzzle(clues);
