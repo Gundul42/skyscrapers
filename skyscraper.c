@@ -6,11 +6,12 @@
 /*   By: graja <gundul@mailbox.org>                     /. `|||||||||||       */
 /*                                                     o__,_||||||||||'       */
 /*   Created: 2021/05/08 16:22:44 by graja                                    */
-/*   Updated: 2021/05/09 08:44:27 by graja                Gundul.net          */
+/*   Updated: 2021/05/09 12:12:43 by graja                Gundul.net          */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 int **ft_getmem2d(int n)
 {
@@ -235,7 +236,9 @@ int** SolvePuzzle (int *clues)
 {
   int  n;
   int  **field;
-  n = 4;   /* make it flexible for later projects */
+  /*n = 4;  */ /* make it flexible for later projects */
+   n = 5; 
+  /* n = 6; */
   field = ft_getmem2d(n);
   ft_solve(field, clues, 0, 0, n);
   ft_printfield(field, n);
@@ -246,9 +249,14 @@ int	main(void)
 {
 	int	**matrix;
 	int	*clues;
-	int	clue[16] = {2,2,1,3,2,2,3,1,1,2,2,3,3,2,1,3};
+	clock_t begin = clock();
+	/* int	clue[16] = {2,2,1,3,2,2,3,1,1,2,2,3,3,2,1,3}; */
+	 int		clue[20] = {4,0,3,2,0,0,0,0,2,0,0,4,0,0,0,1,0,2,3,3}; 
+	/* int		clue[24] = {2,4,3,1,2,2,2,2,3,6,3,1,1,3,4,2,2,3,4,2,1,3,3,2}; */ 
 
 	clues = &clue[0];
 	matrix = SolvePuzzle(clues);
+	clock_t end = clock();
+	printf("calculated in %f s\n\n", (double)(end - begin) / CLOCKS_PER_SEC);
 	return(0);
 }
