@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                                            */
-/*   skyscarper.c                                         .|||||||||.         */
+/*   skyscraper.c                                         .|||||||||.         */
 /*                                                       |||||||||||||        */
 /*   By: graja <gundul@mailbox.org>                     /. `|||||||||||       */
 /*                                                     o__,_||||||||||'       */
 /*   Created: 2021/05/08 16:22:44 by graja                                    */
-/*   Updated: 2021/05/08 17:20:21 by graja                Gundul.net          */
+/*   Updated: 2021/05/09 08:30:06 by graja                Gundul.net          */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -256,13 +256,19 @@ int  ft_checkall(int  **field, int  *clues, int  n)
     }
   i = 0;
   if (ft_zerocheck(field, n) == 1)
+  {
+	  free(tmp);
 	  return (1);
+  }
   while (i < (n * 4))
     {
       if (clues[i] != 0)
       {
         if (clues[i] != tmp[i])
-          return(1);
+	{
+		free(tmp);
+		return(1);
+	}
       }
     i++;
   }
