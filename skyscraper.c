@@ -6,11 +6,12 @@
 /*   By: graja <gundul@mailbox.org>                     /. `|||||||||||       */
 /*                                                     o__,_||||||||||'       */
 /*   Created: 2021/05/08 16:22:44 by graja                                    */
-/*   Updated: 2021/05/10 19:01:39 by graja                Gundul.net          */
+/*   Updated: 2021/05/10 19:19:21 by graja                Gundul.net          */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 int	ft_permut(int *arr, unsigned current, unsigned max, unsigned n, int used[], int idx)
 {
@@ -67,26 +68,6 @@ int **ft_getmem2d(int n)
     i++;
   }
   return (matrix);
-}
-
-int  ft_zerocheck(int  **field, int n)
-{
-  int  x;
-  int  y;
-  
-  x = 0;
-  while (x < n)
-  {
-    y = 0;
-    while (y < n)
-    {
-	if (field[x][y] == 0)
-		return (1);
-      y++;
-    }
-    x++;
-  }
-  return (0);
 }
 
 void  ft_printfield(int  **field,int  n)
@@ -207,11 +188,6 @@ int  ft_checkall(int  **field, int  *clues, int  n)
     i++;
     }
   i = 0;
-  if (ft_zerocheck(field, n) == 1)
-  {
-	  free(tmp);
-	  return (1);
-  }
   while (i < (n * 4))
     {
       if (clues[i] != 0)
@@ -317,7 +293,7 @@ int** SolvePuzzle (int *clues)
   int	used[10] = { 0 };
 
   idx = 0;
-  n = 4;   /* make it flexible for later projects */
+  n = 5;   /* make it flexible for later projects */
   mutasi = malloc(sizeof(int) * ft_fact(n));
   field = ft_getmem2d(n);
   idx = ft_permut(mutasi, 0, n, n, used, idx);
@@ -331,9 +307,12 @@ int	main(void)
 {
 	int	**matrix;
 	int	*clues;
-	int	clue[16] = {0,3,0,0,0,3,3,0,0,0,0,2,0,0,0,0};
+	int	clue[20] = {2,4,3,1,2,2,3,3,2,1,1,2,2,2,3,5,2,3,1,2};
+	clock_t begin = clock();
 
 	clues = &clue[0];
 	matrix = SolvePuzzle(clues);
+	clock_t end = clock();
+	printf("calculated in %f s\n\n", (double)(end - begin) / CLOCKS_PER_SEC);
 	return(0);
 }
