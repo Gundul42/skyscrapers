@@ -6,11 +6,53 @@
 /*   By: graja <gundul@mailbox.org>                     /. `|||||||||||       */
 /*                                                     o__,_||||||||||'       */
 /*   Created: 2021/05/08 16:22:44 by graja                                    */
-/*   Updated: 2021/05/09 08:30:06 by graja                Gundul.net          */
+/*   Updated: 2021/05/10 15:17:40 by graja                Gundul.net          */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
 #include <stdlib.h>
+
+int	ft_permut(int *arr, unsigned current, unsigned max, unsigned n, int used[], int idx)
+{
+	unsigned i;
+
+	if (n == 0)
+  	{
+		idx++;
+		/*printf("%d  - %d\n", current, idx);*/
+		arr[idx - 1] = current;
+	}
+	else
+	{
+		i = 0;
+		while (i < max)
+		{
+			i++;
+      			if (!used[i])
+			{
+				used[i] = 1;
+				idx = ft_permut(arr, current*10 + i, max, n - 1, used, idx);
+				used[i] = 0;
+			}
+		}
+	}
+  return(idx);
+}
+
+int	ft_fact(int n)
+{
+	int	i;
+	int	res;
+
+	res = 1;
+	i = 1;
+	while (i <= n)
+	{
+		res *= i;
+		i++;
+	}
+	return (res);
+}
 
 int **ft_getmem2d(int n)
 {
@@ -47,35 +89,6 @@ int  ft_zerocheck(int  **field, int n)
   return (0);
 }
 
-void  ft_initfield(int **field,int *clues,int n)
-{
-  int  i;
-  int  dir;
-  
-  i = 0;
-  while (i < (n * 4))
-  {
-    dir = (i / n);
-    if ((dir == 0) && (clues[i] == 1))
-      field[0][i] = 4;
-    else if ((dir == 0) && (clues[i] == 4))
-      field[0][i] = 1;
-    else if ((dir == 1) && (clues[i] == 1))
-      field[i - n][n - 1] = 4;
-    else if ((dir == 1) && (clues[i] == 4))
-      field[i - n][n - 1] = 1;
-    else if ((dir == 2) && (clues[i] == 1))
-      field[n - 1][3 * n - i] = 4;
-    else if ((dir == 2) && (clues[i] == 4))
-      field[n - 1][3 * n - i] = 1;
-    else if ((dir == 3) && (clues[i] == 1))
-      field[4 * n - i - 1][0] = 4;
-    else if ((dir == 3) && (clues[i] == 1))
-      field[4 * n - i - 1][0] = 1;
-    i++;
-  }
-}
-
 void  ft_printfield(int  **field,int  n)
 {
   int  row;
@@ -94,67 +107,6 @@ void  ft_printfield(int  **field,int  n)
     row++;
   }
   printf("\n\n");
-}
-
-int  ft_checkvalid(int  **field, int  num, int  n)
-{
-  int  chk[n];
-  int  row;
-  int  col;
-  int  bck;
-  int  i;
-  
-  i = 0;
-  while (i < n)
-  {
-    chk[i] = 0;
-    i++;
-  }
-  bck = 0;
-  row = 0;
-  while (row < n)
-  {
-    col = 0;
-    while (col < n)
-    {
-      if (field[row][col] == num)
-      {
-        bck++;
-        if (chk[col] == 0)
-          chk[col] = 1;
-        else
-          return (1);
-      }
-      col++;
-    }
-    row++;
-  }
-  if (bck == (n - 1))
-  {
-    i = 0;
-    while (i < n)
-    {
-      if (chk[i] == 0)
-        col = i;
-      i++;
-    }
-    row = 0;
-    while (row < n)
-    {
-      i = 0;
-      bck = 0;
-      while (i < n)
-      {
-        if (field[row][i] == num)
-          bck++;
-        i++;
-      }
-      if (bck == 0)
-        field[row][col] = num;
-      row++;
-    }
-  }
-  return (0);
 }
 
 int  ft_countrow(int  **field,int  row,int  n, int dir)
@@ -290,52 +242,98 @@ int  ft_isvalid(int  **field, int row, int col, int num, int n)
   return (0);
 }
 
-int  ft_solve(int  **field, int *clues, int  row, int  col, int  n)
+int	ft_delrow(int **field, int row, int n)
 {
-  int  i;
+	int	i;
+
+	i = 0;
+	while (i < n)
+	{
+		field[row][i] = 0;
+		i++;
+	}
+}
+
+int	ft_fillrow(int **field, int row, int num, int n)
+{
+	int	i;
+	int	chk;
+
+	i = 0;
+	while (i < n)
+	{
+		chk = num % 10;
+		num /= 10;
+		if (ft_isvalid(field, row, n - i - 1, chk, n) == 1)
+		{
+			ft_delrow(field, row, n);
+			return (1);
+		}
+		field[row][n - i - 1] = chk;
+		i++;
+	}
+	if (row == n - 1)
+		ft_printfield(field,n);
+	return (0);
+}
+
+int  ft_solve(int  **field, int *clues, int *mutasi, int  row, int  max, int  n)
+{
+	int	i;
+	int	j;
+	int	val;
+	int	bck;
   
-  i = 1;
-  while (i <= n)
-  {
-    if (ft_isvalid(field, row, col, i, n) == 0)
-    {
-      field[row][col] = i;
-      if ((col == n - 1) && (row < n - 1))
-      {
-        if (ft_solve(field, clues, row + 1, 0, n) == 1)
-          field[row+1][0] = 0;
-        else
-          return(0);
-      }
-      if (col < n - 1)
-      {
-        if (ft_solve(field, clues, row, col + 1, n) == 1)
-          field[row][col + 1] = 0;
-        else
-          return(0);
-      }
-    }
-  i++;
-  }
-  return (ft_checkall(field, clues, n));
+	bck = 1;
+	j = 0;
+	while ((j < max) && (bck == 1))
+	{
+		val = ft_fillrow(field, row, mutasi[j], n);
+		if ((row < n - 1) && (val == 0))
+		{
+			bck = ft_solve(field, clues, mutasi, row + 1, max, n);
+			if (bck == 1)
+				ft_delrow(field, row + 1, n);
+		}
+		if ((row == n - 1) && (val == 0))
+		{
+			if (ft_checkall(field, clues, n) != 0)
+			{
+				ft_delrow(field, row, n);
+				return (1);
+			}
+			else
+				return (0);
+		}
+		j++;
+	}
+	return (ft_checkall(field, clues, n));
 }
 
 int** SolvePuzzle (int *clues)
 {
-  int  n;
-  int  **field;
-  n = 6;   /* make it flexible for later projects */
+  int	n;
+  int	**field;
+  int	*mutasi;
+  int	idx;
+  int	used[10] = { 0 };
+
+  idx = 0;
+  n = 5;   /* make it flexible for later projects */
+  mutasi = malloc(sizeof(int) * ft_fact(n));
   field = ft_getmem2d(n);
-  ft_solve(field, clues, 0, 0, n);
+  idx = ft_permut(mutasi, 0, n, n, used, idx);
+  ft_solve(field, clues, mutasi, 0, idx, n);
   ft_printfield(field, n);
-    return (field);
+  free(mutasi);
+  return (field);
 }
 
 int	main(void)
 {
 	int	**matrix;
 	int	*clues;
-	int	clue[24] = {1,3,4,2,2,2,3,2,1,3,2,2,3,1,2,2,2,4,4,2,2,4,3,1};
+	int	clue[20] = {0,3,3,0,0,0,0,4,0,0,0,0,0,0,4,0,0,0,0,4};
 
 	clues = &clue[0];
 	matrix = SolvePuzzle(clues);
