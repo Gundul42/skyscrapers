@@ -6,7 +6,7 @@
 /*   By: graja <gundul@mailbox.org>                     /. `|||||||||||       */
 /*                                                     o__,_||||||||||'       */
 /*   Created: 2021/05/08 16:22:44 by graja                                    */
-/*   Updated: 2021/05/10 15:17:40 by graja                Gundul.net          */
+/*   Updated: 2021/05/10 19:01:39 by graja                Gundul.net          */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
@@ -264,7 +264,7 @@ int	ft_fillrow(int **field, int row, int num, int n)
 	{
 		chk = num % 10;
 		num /= 10;
-		if (ft_isvalid(field, row, n - i - 1, chk, n) == 1)
+		if ((ft_isvalid(field, row, n - i - 1, chk, n) == 1) && (row != 0))
 		{
 			ft_delrow(field, row, n);
 			return (1);
@@ -272,8 +272,6 @@ int	ft_fillrow(int **field, int row, int num, int n)
 		field[row][n - i - 1] = chk;
 		i++;
 	}
-	if (row == n - 1)
-		ft_printfield(field,n);
 	return (0);
 }
 
@@ -300,11 +298,11 @@ int  ft_solve(int  **field, int *clues, int *mutasi, int  row, int  max, int  n)
 			if (ft_checkall(field, clues, n) != 0)
 			{
 				ft_delrow(field, row, n);
-				return (1);
 			}
 			else
-				return (0);
+				return(0);
 		}
+		/*ft_printfield(field, n);*/
 		j++;
 	}
 	return (ft_checkall(field, clues, n));
@@ -319,7 +317,7 @@ int** SolvePuzzle (int *clues)
   int	used[10] = { 0 };
 
   idx = 0;
-  n = 5;   /* make it flexible for later projects */
+  n = 4;   /* make it flexible for later projects */
   mutasi = malloc(sizeof(int) * ft_fact(n));
   field = ft_getmem2d(n);
   idx = ft_permut(mutasi, 0, n, n, used, idx);
@@ -333,7 +331,7 @@ int	main(void)
 {
 	int	**matrix;
 	int	*clues;
-	int	clue[20] = {0,3,3,0,0,0,0,4,0,0,0,0,0,0,4,0,0,0,0,4};
+	int	clue[16] = {0,3,0,0,0,3,3,0,0,0,0,2,0,0,0,0};
 
 	clues = &clue[0];
 	matrix = SolvePuzzle(clues);
